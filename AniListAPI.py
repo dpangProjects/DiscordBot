@@ -6,11 +6,11 @@ class AniListAPI:
     def __init__(self):
         return
 
-    def getinfo(id):
+    def getinfo(title):
         # Here we define our query as a multi-line string
         query = '''
-        query ($id: Int, $name: String) { # Define which variables will be used in the query (id)
-          Media (id: $id, type: MANGA) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
+        query ($search: String, $name: String) { # Define which variables will be used in the query (id)
+          Media (search: $search, format: MANGA) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
             id
             title{
                 romaji
@@ -37,7 +37,7 @@ class AniListAPI:
         # Define our query variables and values that will be used in the query request
         variables = {
             'name': "KnowName",
-            'id': id
+            'search': title
         }
 
         url = 'https://graphql.anilist.co'
@@ -51,7 +51,7 @@ class AniListAPI:
         title = info['data']['Media']['title']['romaji']
         image = info['data']['Media']['coverImage']['large']
         scores = info['data']['User']['statistics']['manga']['scores']
-        goal_id = 112981
+        goal_id = info['data']['Media']['id']
         goal_score = 0
 
         for i in range(len(scores)):
@@ -60,6 +60,8 @@ class AniListAPI:
                 if Id == goal_id:
                     goal_score = score
 
+        print(title)
+        print(goal_id)
         return title, goal_score, image
 
 
